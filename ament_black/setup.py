@@ -4,15 +4,15 @@ package_name = "ament_black"
 
 setup(
     name=package_name,
-    version="0.0.4",
+    version="0.2.0",
     packages=find_packages(exclude=["test"]),
     data_files=[
         ("share/" + package_name, ["package.xml"]),
         ("share/ament_index/resource_index/packages", ["resource/" + package_name]),
     ],
     install_requires=[
-        "setuptools",
-        "unidiff",
+        "setuptools==56.6.0",
+        "unidiff==0.5.5",
         "black==21.12b0",
     ],
     zip_safe=False,

@@ -1,4 +1,4 @@
-# Copyright 2015 Open Source Robotics Foundation, Inc.
+# Copyright (c) 2019 ROS-Industrial Consortium Asia Pacific
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,11 +13,11 @@
 # limitations under the License.
 
 import pytest
-from ament_pep257.main import main
+from ament_xmllint.main import main
 
 
 @pytest.mark.linter
-@pytest.mark.pep257
-def test_pep257():
-    rc = main(argv=[".", "test"])
-    assert rc == 0, "Found code style errors / warnings"
+@pytest.mark.xmllint
+def test_xmllint():
+    rc = main(argv=[])
+    assert rc == 0, "Found errors"
