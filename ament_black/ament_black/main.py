@@ -63,10 +63,11 @@ def main(argv=sys.argv[1:]):
     report = []
 
     # invoke black
-    black_args = []
+    black_args_withouth_path = []
     if args.config_file is not None:
-        black_args.extend(["--config", args.config_file])
-    black_args.extend(files)
+        black_args_withouth_path.extend(["--config", args.config_file])
+    black_args = black_args_withouth_path.copy()
+    black_args.extend(args.paths)
 
     with tempfile.NamedTemporaryFile("w") as diff:
         with contextlib.redirect_stdout(diff):
@@ -86,7 +87,10 @@ def main(argv=sys.argv[1:]):
 
     # overwrite original with reformatted files
     if args.reformat and changed_files:
-        black(black_args)
+        # pass other arguments, such as the config, but run now only on files to be changed
+        reformat_args = black_args_withouth_path.copy()
+        reformat_args.extend(changed_files)
+        black(reformat_args)
 
     # output summary
     file_count = sum(1 if report[k] else 0 for k in report.keys())
