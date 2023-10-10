@@ -28,8 +28,8 @@ jobs:
         with:
           name: Release artifacts
           path: |
-            dist/*.tar.gz
-            dist/*.whl
+            ${{github.workspace}}/ament_black/dist/*.tar.gz
+            ${{github.workspace}}/ament_black/dist/*.whl
 
   pypi:
     if: github.event_name == 'release'
