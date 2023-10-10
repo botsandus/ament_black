@@ -23,8 +23,18 @@ import tempfile
 import time
 from xml.sax.saxutils import escape, quoteattr
 
-from black import main as black
 from unidiff import PatchSet
+
+
+def patched_black(*args, **kwargs) -> None:
+    from multiprocessing import freeze_support
+
+    from black import main as black
+    from black.concurrency import maybe_install_uvloop
+
+    maybe_install_uvloop()
+    freeze_support()
+    black(*args, **kwargs)
 
 
 def main(argv=sys.argv[1:]):
@@ -71,7 +81,7 @@ def main(argv=sys.argv[1:]):
 
     with tempfile.NamedTemporaryFile("w") as diff:
         with contextlib.redirect_stdout(diff):
-            black([*black_args, "--diff"], standalone_mode=False)
+            patched_black([*black_args, "--diff"], standalone_mode=False)
             with open(diff.name, "r") as file:
                 output = file.read()
 
@@ -90,7 +100,7 @@ def main(argv=sys.argv[1:]):
         # pass other arguments, such as the config, but run now only on files to be changed
         reformat_args = black_args_withouth_path.copy()
         reformat_args.extend(changed_files)
-        black(reformat_args)
+        patched_black(reformat_args)
 
     # output summary
     file_count = sum(1 if report[k] else 0 for k in report.keys())
