@@ -28,8 +28,6 @@ from unidiff import PatchSet
 
 
 def main(argv=sys.argv[1:]):
-    extensions = ["py"]
-
     parser = argparse.ArgumentParser(
         description="Check code style using black.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -38,8 +36,7 @@ def main(argv=sys.argv[1:]):
         "paths",
         nargs="*",
         default=[os.curdir],
-        help="The files or directories to check. For directories files ending "
-        "in %s will be considered." % ", ".join(["'.%s'" % e for e in extensions]),
+        help="The files or directories to check. this argument is directly passed to  black",
     )
     parser.add_argument(
         "--config",
@@ -63,12 +60,6 @@ def main(argv=sys.argv[1:]):
 
     if args.xunit_file:
         start_time = time.time()
-
-    files = get_files(args.paths, extensions)
-    if not files:
-        print("No files found", file=sys.stderr)
-        return 1
-
     report = []
 
     # invoke black
@@ -127,28 +118,6 @@ def main(argv=sys.argv[1:]):
             f.write(xml)
 
     return rc
-
-
-def get_files(paths, extensions):
-    files = []
-    for path in paths:
-        if os.path.isdir(path):
-            for dirpath, dirnames, filenames in os.walk(path):
-                if "AMENT_IGNORE" in filenames:
-                    dirnames[:] = []
-                    continue
-                # ignore folder starting with . or _
-                dirnames[:] = [d for d in dirnames if d[0] not in [".", "_"]]
-                dirnames.sort()
-
-                # select files by extension
-                for filename in sorted(filenames):
-                    _, ext = os.path.splitext(filename)
-                    if ext in (".%s" % e for e in extensions):
-                        files.append(os.path.join(dirpath, filename))
-        if os.path.isfile(path):
-            files.append(path)
-    return [os.path.normpath(f) for f in files]
 
 
 def find_index_of_line_start(data, offset):
