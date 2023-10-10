@@ -23,13 +23,21 @@ import tempfile
 import time
 from xml.sax.saxutils import escape, quoteattr
 
-from black import main as black
 from unidiff import PatchSet
 
 
-def main(argv=sys.argv[1:]):
-    extensions = ["py"]
+def patched_black(*args, **kwargs) -> None:
+    from multiprocessing import freeze_support
 
+    from black import main as black
+    from black.concurrency import maybe_install_uvloop
+
+    maybe_install_uvloop()
+    freeze_support()
+    black(*args, **kwargs)
+
+
+def main(argv=sys.argv[1:]):
     parser = argparse.ArgumentParser(
         description="Check code style using black.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -38,8 +46,7 @@ def main(argv=sys.argv[1:]):
         "paths",
         nargs="*",
         default=[os.curdir],
-        help="The files or directories to check. For directories files ending "
-        "in %s will be considered." % ", ".join(["'.%s'" % e for e in extensions]),
+        help="The files or directories to check. this argument is directly passed to  black",
     )
     parser.add_argument(
         "--config",
@@ -63,23 +70,18 @@ def main(argv=sys.argv[1:]):
 
     if args.xunit_file:
         start_time = time.time()
-
-    files = get_files(args.paths, extensions)
-    if not files:
-        print("No files found", file=sys.stderr)
-        return 1
-
     report = []
 
     # invoke black
-    black_args = []
+    black_args_withouth_path = []
     if args.config_file is not None:
-        black_args.extend(["--config", args.config_file])
-    black_args.extend(files)
+        black_args_withouth_path.extend(["--config", args.config_file])
+    black_args = black_args_withouth_path.copy()
+    black_args.extend(args.paths)
 
     with tempfile.NamedTemporaryFile("w") as diff:
         with contextlib.redirect_stdout(diff):
-            black([*black_args, "--diff"], standalone_mode=False)
+            patched_black([*black_args, "--diff"], standalone_mode=False)
             with open(diff.name, "r") as file:
                 output = file.read()
 
@@ -95,7 +97,10 @@ def main(argv=sys.argv[1:]):
 
     # overwrite original with reformatted files
     if args.reformat and changed_files:
-        black(black_args)
+        # pass other arguments, such as the config, but run now only on files to be changed
+        reformat_args = black_args_withouth_path.copy()
+        reformat_args.extend(changed_files)
+        patched_black(reformat_args)
 
     # output summary
     file_count = sum(1 if report[k] else 0 for k in report.keys())
@@ -127,28 +132,6 @@ def main(argv=sys.argv[1:]):
             f.write(xml)
 
     return rc
-
-
-def get_files(paths, extensions):
-    files = []
-    for path in paths:
-        if os.path.isdir(path):
-            for dirpath, dirnames, filenames in os.walk(path):
-                if "AMENT_IGNORE" in filenames:
-                    dirnames[:] = []
-                    continue
-                # ignore folder starting with . or _
-                dirnames[:] = [d for d in dirnames if d[0] not in [".", "_"]]
-                dirnames.sort()
-
-                # select files by extension
-                for filename in sorted(filenames):
-                    _, ext = os.path.splitext(filename)
-                    if ext in (".%s" % e for e in extensions):
-                        files.append(os.path.join(dirpath, filename))
-        if os.path.isfile(path):
-            files.append(path)
-    return [os.path.normpath(f) for f in files]
 
 
 def find_index_of_line_start(data, offset):

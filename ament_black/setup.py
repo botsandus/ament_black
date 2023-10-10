@@ -11,9 +11,10 @@ setup(
         ("share/ament_index/resource_index/packages", ["resource/" + package_name]),
     ],
     install_requires=[
+        "black==21.12b0",
         "setuptools>=56",
         "unidiff>=0.5",
-        "black==21.12b0",
+        "uvloop==0.17.0",
     ],
     zip_safe=False,
     author="Tyler Weaver",
