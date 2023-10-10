@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    name: Build source distribution
+    name: Build sdist and wheel
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,9 +21,9 @@ jobs:
         with:
           python-version: "3.10"
       - name: Build sdist
-        run: |
-          pipx run build --sdist ${{github.workspace}}/ament_black/
-          pipx run build --wheel ${{github.workspace}}/ament_black/
+        run: pipx run build --sdist ${{github.workspace}}/ament_black/
+      - name: Build wheel
+        run: pipx run build --wheel ${{github.workspace}}/ament_black/
       - uses: actions/upload-artifact@v3
         with:
           name: Release artifacts
