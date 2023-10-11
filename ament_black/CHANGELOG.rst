@@ -2,8 +2,8 @@
 Changelog for package ament_black
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.2 (2023-10-11)
+------------------
 * Nacho/fix ci tests (`#5 <https://github.com/botsandus/ament_black/issues/5>`_)
   * Add missing test dependency
   * pre-commit
