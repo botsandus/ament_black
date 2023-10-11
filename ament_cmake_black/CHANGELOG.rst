@@ -2,8 +2,8 @@
 Changelog for package ament_cmake_black
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.1 (2023-10-11)
+------------------
 * Fix multiple files reformat crash and improve file detection using black
 * Contributors: Ignacio Vizzo
 

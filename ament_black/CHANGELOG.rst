@@ -2,8 +2,8 @@
 Changelog for package ament_black
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.1 (2023-10-11)
+------------------
 * Nacho/fix black (`#4 <https://github.com/botsandus/ament_black/issues/4>`_)
   * Don't guess filenames. Black knows better
   * Pass only the files to be formatted
