@@ -26,7 +26,7 @@ jobs:
         run: pipx run build --wheel ${{github.workspace}}/ament_black/
       - name: Move artifacts to dist
         run: |
-          mkdir -p dist 
+          mkdir -p dist
           mv ${{github.workspace}}/ament_black/dist/*.tar.gz dist/
           mv ${{github.workspace}}/ament_black/dist/*.whl dist/
       - uses: actions/upload-artifact@v3
