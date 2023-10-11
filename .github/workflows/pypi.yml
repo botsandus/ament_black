@@ -24,12 +24,17 @@ jobs:
         run: pipx run build --sdist ${{github.workspace}}/ament_black/
       - name: Build wheel
         run: pipx run build --wheel ${{github.workspace}}/ament_black/
+      - name: Move artifacts to dist
+        run: |
+          mkdir -p dist 
+          mv ${{github.workspace}}/ament_black/dist/*.tar.gz dist/
+          mv ${{github.workspace}}/ament_black/dist/*.whl dist/
       - uses: actions/upload-artifact@v3
         with:
-          name: Release artifacts
+          name: artifacts
           path: |
-            ${{github.workspace}}/ament_black/dist/*.tar.gz
-            ${{github.workspace}}/ament_black/dist/*.whl
+            dist/*.tar.gz
+            dist/*.whl
 
   pypi:
     if: github.event_name == 'release'
@@ -38,7 +43,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: artifact
+          name: artifacts
           path: dist
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
