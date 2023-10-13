@@ -2,6 +2,11 @@
 Changelog for package ament_black
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add python3-uvloop as dependency https://github.com/ros/rosdistro/pull/38754
+* Contributors: Ignacio Vizzo
+
 0.2.2 (2023-10-11)
 ------------------
 * Nacho/fix ci tests (`#5 <https://github.com/botsandus/ament_black/issues/5>`_)

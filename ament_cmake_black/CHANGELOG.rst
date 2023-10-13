@@ -2,6 +2,11 @@
 Changelog for package ament_cmake_black
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix amenx_xmllint test
+* Contributors: Ignacio Vizzo
+
 0.2.2 (2023-10-11)
 ------------------
 * Nacho/fix ci tests (`#5 <https://github.com/botsandus/ament_black/issues/5>`_)
