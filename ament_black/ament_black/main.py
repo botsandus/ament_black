@@ -46,7 +46,7 @@ def main(argv=sys.argv[1:]):
         "paths",
         nargs="*",
         default=[os.curdir],
-        help="The files or directories to check. this argument is directly passed to  black",
+        help="The files or directories to check. this argument is directly passed to black",
     )
     parser.add_argument(
         "--config",
@@ -56,11 +56,14 @@ def main(argv=sys.argv[1:]):
         help="The config file",
     )
     parser.add_argument(
-        "--reformat", action="store_true", help="Reformat the files in place"
+        "--reformat",
+        action="store_true",
+        help="Reformat the files in place",
     )
-    # not using a file handle directly
-    # in order to prevent leaving an empty file when something fails early
-    parser.add_argument("--xunit-file", help="Generate a xunit compliant XML file")
+    parser.add_argument(
+        "--xunit-file",
+        help="Generate a xunit compliant XML file",
+    )
     args = parser.parse_args(argv)
 
     # if we have specified a config file, make sure it exists and abort if not
