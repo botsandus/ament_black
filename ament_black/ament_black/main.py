@@ -43,30 +43,30 @@ def patched_black(*args, **kwargs) -> None:
 
 def main(argv=sys.argv[1:]):
     parser = argparse.ArgumentParser(
-        description="Check code style using black.",
+        description='Check code style using black.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
-        "paths",
-        nargs="*",
+        'paths',
+        nargs='*',
         default=[os.curdir],
-        help="The files or directories to check. this argument is directly passed to black",
+        help='The files or directories to check. this argument is directly passed to black',
     )
     parser.add_argument(
-        "--config",
-        metavar="path",
+        '--config',
+        metavar='path',
         default=None,
-        dest="config_file",
-        help="The config file",
+        dest='config_file',
+        help='The config file',
     )
     parser.add_argument(
-        "--reformat",
-        action="store_true",
-        help="Reformat the files in place",
+        '--reformat',
+        action='store_true',
+        help='Reformat the files in place',
     )
     parser.add_argument(
-        "--xunit-file",
-        help="Generate a xunit compliant XML file",
+        '--xunit-file',
+        help='Generate a xunit compliant XML file',
     )
     args = parser.parse_args(argv)
 
@@ -86,7 +86,7 @@ def main(argv=sys.argv[1:]):
         extend_exclude=None,
         force_exclude=None,
         report=Report(),
-        stdin_filename="",
+        stdin_filename='',
     )
     checked_files = [str(path) for path in sources]
 
@@ -96,14 +96,14 @@ def main(argv=sys.argv[1:]):
     # invoke black
     black_args_withouth_path = []
     if args.config_file is not None:
-        black_args_withouth_path.extend(["--config", args.config_file])
+        black_args_withouth_path.extend(['--config', args.config_file])
     black_args = black_args_withouth_path.copy()
     black_args.extend(args.paths)
 
-    with tempfile.NamedTemporaryFile("w") as diff:
+    with tempfile.NamedTemporaryFile('w') as diff:
         with contextlib.redirect_stdout(diff):
-            patched_black([*black_args, "--diff"], standalone_mode=False)
-            with open(diff.name, "r") as file:
+            patched_black([*black_args, '--diff'], standalone_mode=False)
+            with open(diff.name, 'r') as file:
                 output = file.read()
 
     # output errors
@@ -127,11 +127,11 @@ def main(argv=sys.argv[1:]):
     file_count = sum(1 if report[k] else 0 for k in report.keys())
     replacement_count = sum(len(r) for r in report.values())
     if not file_count:
-        print("No problems found")
+        print('No problems found')
         rc = 0
     else:
         print(
-            "%d files with %d code style divergences" % (file_count, replacement_count),
+            '%d files with %d code style divergences' % (file_count, replacement_count),
             file=sys.stderr,
         )
         rc = 1
@@ -140,51 +140,49 @@ def main(argv=sys.argv[1:]):
     if args.xunit_file:
         folder_name = os.path.basename(os.path.dirname(args.xunit_file))
         file_name = os.path.basename(args.xunit_file)
-        suffix = ".xml"
+        suffix = '.xml'
         if file_name.endswith(suffix):
             file_name = file_name.split(suffix)[0]
-        testname = "%s.%s" % (folder_name, file_name)
+        testname = '%s.%s' % (folder_name, file_name)
 
-        xml = get_xunit_content(
-            report, testname, time.time() - start_time, checked_files
-        )
+        xml = get_xunit_content(report, testname, time.time() - start_time, checked_files)
         path = os.path.dirname(os.path.abspath(args.xunit_file))
         if not os.path.exists(path):
             os.makedirs(path)
-        with open(args.xunit_file, "w") as f:
+        with open(args.xunit_file, 'w') as f:
             f.write(xml)
 
     return rc
 
 
 def find_index_of_line_start(data, offset):
-    index_1 = data.rfind("\n", 0, offset) + 1
-    index_2 = data.rfind("\r", 0, offset) + 1
+    index_1 = data.rfind('\n', 0, offset) + 1
+    index_2 = data.rfind('\r', 0, offset) + 1
     return max(index_1, index_2)
 
 
 def find_index_of_line_end(data, offset):
-    index_1 = data.find("\n", offset)
+    index_1 = data.find('\n', offset)
     if index_1 == -1:
         index_1 = len(data)
-    index_2 = data.find("\r", offset)
+    index_2 = data.find('\r', offset)
     if index_2 == -1:
         index_2 = len(data)
     return min(index_1, index_2)
 
 
 def get_line_number(data, offset):
-    return data[0:offset].count("\n") + data[0:offset].count("\r") + 1
+    return data[0:offset].count('\n') + data[0:offset].count('\r') + 1
 
 
 def get_xunit_content(report, testname, elapsed, checked_files):
     test_count = sum(max(len(r), 1) for r in report.values())
     error_count = sum(len(r) for r in report.values())
     data = {
-        "testname": testname,
-        "test_count": test_count,
-        "error_count": error_count,
-        "time": "%.3f" % round(elapsed, 3),
+        'testname': testname,
+        'test_count': test_count,
+        'error_count': error_count,
+        'time': '%.3f' % round(elapsed, 3),
     }
     xml = (
         """<?xml version="1.0" encoding="UTF-8"?>
@@ -205,11 +203,9 @@ def get_xunit_content(report, testname, elapsed, checked_files):
         if hunks:
             for hunk in hunks:
                 data = {
-                    "quoted_location": quoteattr(
-                        "%s:%d" % (filename, hunk.source_start)
-                    ),
-                    "testname": testname,
-                    "quoted_message": quoteattr(str(hunk)),
+                    'quoted_location': quoteattr('%s:%d' % (filename, hunk.source_start)),
+                    'testname': testname,
+                    'quoted_message': quoteattr(str(hunk)),
                 }
                 xml += (
                     """  <testcase
@@ -224,7 +220,7 @@ def get_xunit_content(report, testname, elapsed, checked_files):
 
         else:
             # if there are no replacements report a single successful test
-            data = {"quoted_location": quoteattr(filename), "testname": testname}
+            data = {'quoted_location': quoteattr(filename), 'testname': testname}
             xml += (
                 """  <testcase
     name=%(quoted_location)s
@@ -234,18 +230,16 @@ def get_xunit_content(report, testname, elapsed, checked_files):
             )
 
     # output list of checked files
-    data = {
-        "checked_files": escape("".join(["\n* %s" % r for r in sorted(checked_files)]))
-    }
+    data = {'checked_files': escape(''.join(['\n* %s' % r for r in sorted(checked_files)]))}
     xml += (
         """  <system-out>Checked files:%(checked_files)s</system-out>
 """
         % data
     )
 
-    xml += "</testsuite>\n"
+    xml += '</testsuite>\n'
     return xml
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     sys.exit(main())

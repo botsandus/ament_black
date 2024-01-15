@@ -20,4 +20,4 @@ from ament_xmllint.main import main
 @pytest.mark.xmllint
 def test_xmllint():
     rc = main(argv=[])
-    assert rc == 0, "Found errors"
+    assert rc == 0, 'Found errors'
