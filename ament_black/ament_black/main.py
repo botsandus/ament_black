@@ -24,9 +24,8 @@ import time
 from xml.sax.saxutils import escape, quoteattr
 
 import click
-from black import get_sources
+from black import get_sources, re_compile_maybe_verbose
 from black import main as black
-from black import re_compile_maybe_verbose
 from black.concurrency import maybe_install_uvloop
 from black.const import DEFAULT_EXCLUDES, DEFAULT_INCLUDES
 from black.report import Report
