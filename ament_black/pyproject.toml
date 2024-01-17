@@ -1,0 +1,10 @@
+[tool.ruff]
+line-length = 99
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "tab"
+docstring-code-format = true
+
+[tool.isort]
+profile = "google"

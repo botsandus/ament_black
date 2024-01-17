@@ -21,14 +21,17 @@ import os
 import sys
 import tempfile
 import time
-from xml.sax.saxutils import escape, quoteattr
+from xml.sax.saxutils import escape
+from xml.sax.saxutils import quoteattr
 
-import click
-from black import get_sources, re_compile_maybe_verbose
+from black import get_sources
 from black import main as black
+from black import re_compile_maybe_verbose
 from black.concurrency import maybe_install_uvloop
-from black.const import DEFAULT_EXCLUDES, DEFAULT_INCLUDES
+from black.const import DEFAULT_EXCLUDES
+from black.const import DEFAULT_INCLUDES
 from black.report import Report
+import click
 from unidiff import PatchSet
 
 
