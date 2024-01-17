@@ -14,8 +14,11 @@ repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.1.13
     hooks:
-      # Sort Imports
-      - id: ruff
-        args: [--select, I, --fix]
-      # "Black" format, with single quotes
       - id: ruff-format
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.6.4
+    hooks:
+      - id: isort
+        args: [--profile, google]
+
