@@ -17,8 +17,7 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.6.4
+    rev: 5.13.2
     hooks:
       - id: isort
         args: [--profile, google]
-
