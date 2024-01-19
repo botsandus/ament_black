@@ -21,3 +21,16 @@ repos:
     hooks:
       - id: isort
         args: [--profile, google]
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 4.0.1
+    hooks:
+      - id: flake8
+        args: [--config, ./ament_black/.flake8]
+        additional_dependencies:
+          [
+            flake8-builtins,
+            flake8-comprehensions,
+            flake8-docstrings,
+            flake8-import-order,
+          ]
