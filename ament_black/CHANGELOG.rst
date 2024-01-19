@@ -2,8 +2,8 @@
 Changelog for package ament_black
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.4 (2024-01-19)
+------------------
 * Nacho/fix rolling build (`#9 <https://github.com/botsandus/ament_black/issues/9>`_)
 * Nacho/fix xunit report (`#8 <https://github.com/botsandus/ament_black/issues/8>`_)
 * Contributors: Ignacio Vizzo
