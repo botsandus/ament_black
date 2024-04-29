@@ -24,7 +24,7 @@ import time
 from xml.sax.saxutils import escape
 from xml.sax.saxutils import quoteattr
 
-from black import get_sources, find_project_root
+from black import find_project_root, get_sources
 from black import main as black
 from black import re_compile_maybe_verbose
 from black.concurrency import maybe_install_uvloop
