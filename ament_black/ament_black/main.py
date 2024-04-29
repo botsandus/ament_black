@@ -24,14 +24,13 @@ import time
 from xml.sax.saxutils import escape
 from xml.sax.saxutils import quoteattr
 
-from black import get_sources
+from black import get_sources, find_project_root
 from black import main as black
 from black import re_compile_maybe_verbose
 from black.concurrency import maybe_install_uvloop
 from black.const import DEFAULT_EXCLUDES
 from black.const import DEFAULT_INCLUDES
 from black.report import Report
-import click
 from unidiff import PatchSet
 
 
@@ -79,7 +78,7 @@ def main(argv=sys.argv[1:]):
 
     # TODO(Nacho): Inject the config file results into the ctx (use read_pyproject_toml)
     sources = get_sources(
-        ctx=click.Context(black),
+        root=find_project_root(tuple(args.paths))[0],
         src=tuple(args.paths),
         quiet=True,
         verbose=False,
