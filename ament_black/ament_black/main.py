@@ -21,6 +21,13 @@ import os
 import sys
 import tempfile
 import time
+
+from packaging.version import Version
+from importlib import metadata
+
+BLACK_VERSION = metadata.version('black')
+BLACK_OLD_GET_SOURCES_API = Version(BLACK_VERSION) < Version("23.9.0")
+
 from xml.sax.saxutils import escape
 from xml.sax.saxutils import quoteattr
 
@@ -31,6 +38,7 @@ from black.concurrency import maybe_install_uvloop
 from black.const import DEFAULT_EXCLUDES
 from black.const import DEFAULT_INCLUDES
 from black.report import Report
+import click
 from unidiff import PatchSet
 
 
@@ -77,18 +85,32 @@ def main(argv=sys.argv[1:]):
         return 1
 
     # TODO(Nacho): Inject the config file results into the ctx (use read_pyproject_toml)
-    sources = get_sources(
-        root=find_project_root(tuple(args.paths))[0],
-        src=tuple(args.paths),
-        quiet=True,
-        verbose=False,
-        include=re_compile_maybe_verbose(DEFAULT_INCLUDES),
-        exclude=re_compile_maybe_verbose(DEFAULT_EXCLUDES),
-        extend_exclude=None,
-        force_exclude=None,
-        report=Report(),
-        stdin_filename='',
-    )
+    if BLACK_OLD_GET_SOURCES_API:
+        sources = get_sources(
+            ctx=click.Context(black),
+            src=tuple(args.paths),
+            quiet=True,
+            verbose=False,
+            include=re_compile_maybe_verbose(DEFAULT_INCLUDES),
+            exclude=re_compile_maybe_verbose(DEFAULT_EXCLUDES),
+            extend_exclude=None,
+            force_exclude=None,
+            report=Report(),
+            stdin_filename='',
+        )
+    else:
+        sources = get_sources(
+            root=find_project_root(tuple(args.paths))[0],
+            src=tuple(args.paths),
+            quiet=True,
+            verbose=False,
+            include=re_compile_maybe_verbose(DEFAULT_INCLUDES),
+            exclude=re_compile_maybe_verbose(DEFAULT_EXCLUDES),
+            extend_exclude=None,
+            force_exclude=None,
+            report=Report(),
+            stdin_filename='',
+        )
     checked_files = [str(path) for path in sources]
 
     if args.xunit_file:
