@@ -25,7 +25,6 @@ import time
 from xml.sax.saxutils import escape
 from xml.sax.saxutils import quoteattr
 
-from black import find_project_root
 from black import get_sources
 from black import main as black
 from black import re_compile_maybe_verbose
@@ -97,6 +96,7 @@ def main(argv=sys.argv[1:]):
             stdin_filename='',
         )
     else:
+        from black import find_project_root
         sources = get_sources(
             root=find_project_root(tuple(args.paths))[0],
             src=tuple(args.paths),
