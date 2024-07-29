@@ -17,21 +17,22 @@
 
 import argparse
 import contextlib
+from importlib import metadata
 import os
 import sys
 import tempfile
 import time
 
 from packaging.version import Version
-from importlib import metadata
 
 BLACK_VERSION = metadata.version('black')
-BLACK_OLD_GET_SOURCES_API = Version(BLACK_VERSION) < Version("23.9.0")
+BLACK_OLD_GET_SOURCES_API = Version(BLACK_VERSION) < Version('23.9.0')
 
 from xml.sax.saxutils import escape
 from xml.sax.saxutils import quoteattr
 
-from black import find_project_root, get_sources
+from black import find_project_root
+from black import get_sources
 from black import main as black
 from black import re_compile_maybe_verbose
 from black.concurrency import maybe_install_uvloop
