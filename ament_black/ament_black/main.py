@@ -80,9 +80,8 @@ def main(argv=sys.argv[1:]):
         return 1
 
     # TODO(Nacho): Inject the config file results into the ctx (use read_pyproject_toml)
-    BLACK_VERSION = metadata.version('black')
-    BLACK_OLD_GET_SOURCES_API = Version(BLACK_VERSION) < Version('23.9.0')
-    if BLACK_OLD_GET_SOURCES_API:
+    BLACK_VERSION = Version(metadata.version('black'))
+    if BLACK_VERSION < Version('23.9.0'):
         sources = get_sources(
             ctx=click.Context(black),
             src=tuple(args.paths),
@@ -96,7 +95,10 @@ def main(argv=sys.argv[1:]):
             stdin_filename='',
         )
     else:
+        # Hack to support newer versions of black in ROS Jazzy
+        # https://github.com/botsandus/ament_black/issues/12
         from black import find_project_root
+
         sources = get_sources(
             root=find_project_root(tuple(args.paths))[0],
             src=tuple(args.paths),
