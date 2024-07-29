@@ -22,12 +22,6 @@ import os
 import sys
 import tempfile
 import time
-
-from packaging.version import Version
-
-BLACK_VERSION = metadata.version('black')
-BLACK_OLD_GET_SOURCES_API = Version(BLACK_VERSION) < Version('23.9.0')
-
 from xml.sax.saxutils import escape
 from xml.sax.saxutils import quoteattr
 
@@ -40,6 +34,7 @@ from black.const import DEFAULT_EXCLUDES
 from black.const import DEFAULT_INCLUDES
 from black.report import Report
 import click
+from packaging.version import Version
 from unidiff import PatchSet
 
 
@@ -86,6 +81,8 @@ def main(argv=sys.argv[1:]):
         return 1
 
     # TODO(Nacho): Inject the config file results into the ctx (use read_pyproject_toml)
+    BLACK_VERSION = metadata.version('black')
+    BLACK_OLD_GET_SOURCES_API = Version(BLACK_VERSION) < Version('23.9.0')
     if BLACK_OLD_GET_SOURCES_API:
         sources = get_sources(
             ctx=click.Context(black),
@@ -260,7 +257,6 @@ def get_xunit_content(report, testname, elapsed, checked_files):
 """
         % data
     )
-
     xml += '</testsuite>\n'
     return xml
 
