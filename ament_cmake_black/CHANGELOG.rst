@@ -2,8 +2,8 @@
 Changelog for package ament_cmake_black
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.5 (2024-07-29)
+------------------
 * Add ament_cmake_black_CONFIG_FILE option. (`#11 <https://github.com/botsandus/ament_black/issues/11>`_)
   ament_cmake_black_CONFIG_FILE mimics the options available in other ament lint packages like ament_cmake_flake8
 * Contributors: gstorer

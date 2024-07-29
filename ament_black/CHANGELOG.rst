@@ -2,8 +2,8 @@
 Changelog for package ament_black
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.5 (2024-07-29)
+------------------
 * Fix ament_black for new get_sources API (`#13 <https://github.com/botsandus/ament_black/issues/13>`_)
   * Fix ament_black for new get_sources API
   * Fix import order
