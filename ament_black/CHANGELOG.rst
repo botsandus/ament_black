@@ -2,6 +2,20 @@
 Changelog for package ament_black
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix ament_black for new get_sources API (`#13 <https://github.com/botsandus/ament_black/issues/13>`_)
+  * Fix ament_black for new get_sources API
+  * Fix import order
+  * Add backward compatibility with older black versions
+  * style
+  * Move global variables inside method to fix flake8
+  * Import only for newer versions
+  * Last tweak
+  ---------
+  Co-authored-by: Ignacio Vizzo <ignacio@dexory.com>
+* Contributors: Błażej Sowa
+
 0.2.4 (2024-01-19)
 ------------------
 * Nacho/fix rolling build (`#9 <https://github.com/botsandus/ament_black/issues/9>`_)
