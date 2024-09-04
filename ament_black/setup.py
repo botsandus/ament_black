@@ -13,6 +13,7 @@ setup(
     ],
     install_requires=[
         'black==21.12b0',
+        'packaging>=20.3',
         'setuptools>=56',
         'unidiff>=0.5',
         'uvloop==0.17.0',
