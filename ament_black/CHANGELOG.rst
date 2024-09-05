@@ -2,8 +2,8 @@
 Changelog for package ament_black
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.6 (2024-09-05)
+------------------
 * Add packaging as a required dependency (`#14 <https://github.com/botsandus/ament_black/issues/14>`_)
   Follow up to:
   - https://github.com/botsandus/ament_black/pull/13
