@@ -2,6 +2,13 @@
 Changelog for package ament_black
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add packaging as a required dependency (`#14 <https://github.com/botsandus/ament_black/issues/14>`_)
+  Follow up to:
+  - https://github.com/botsandus/ament_black/pull/13
+* Contributors: Ruffin
+
 0.2.5 (2024-07-29)
 ------------------
 * Fix ament_black for new get_sources API (`#13 <https://github.com/botsandus/ament_black/issues/13>`_)
