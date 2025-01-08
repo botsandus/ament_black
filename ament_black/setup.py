@@ -16,7 +16,7 @@ setup(
         'packaging>=20.3',
         'setuptools>=56',
         'unidiff>=0.5',
-        'uvloop==0.17.0',
+        'uvloop==0.18.0',
     ],
     zip_safe=False,
     author='Tyler Weaver',
