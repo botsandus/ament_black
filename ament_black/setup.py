@@ -12,11 +12,15 @@ setup(
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
     ],
     install_requires=[
-        'black==21.12b0',
+        # Unpinned so pip installs a black/uvloop compatible with the running Python.
+        # The old black==21.12b0 + uvloop==0.17.0 pins have no Python 3.14 wheels and
+        # broke pip installs; ament_black adapts to black's API across versions via the
+        # maybe_install_uvloop/maybe_use_uvloop fallback in main.py.
+        'black',
         'packaging>=20.3',
         'setuptools>=56',
         'unidiff>=0.5',
-        'uvloop==0.17.0',
+        'uvloop',
     ],
     zip_safe=False,
     author='Tyler Weaver',
