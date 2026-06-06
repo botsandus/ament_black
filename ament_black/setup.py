@@ -12,11 +12,17 @@ setup(
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
     ],
     install_requires=[
-        # Unpinned so pip installs a black/uvloop compatible with the running Python.
-        # The old black==21.12b0 + uvloop==0.17.0 pins have no Python 3.14 wheels and
-        # broke pip installs; ament_black adapts to black's API across versions via the
-        # maybe_install_uvloop/maybe_use_uvloop fallback in main.py.
-        'black',
+        # black is a formatter, so its version controls output. Bound it to the
+        # 2026 stable-style year: >=26.3 picks up Python 3.14 wheels and matches the
+        # image's black, while <27 caps black's once-a-year stable-style change so
+        # this pip install path (the pre-commit hook) can't silently format
+        # differently from the image's black used by the colcon/deb lint, which is
+        # governed by package.xml rather than setup.py. The old black==21.12b0 pin
+        # had no Python 3.14 wheel. uvloop is left unpinned below (optional
+        # accelerator, no effect on formatting; the old uvloop==0.17.0 pin had no
+        # py3.14 wheel either). The maybe_install_uvloop/maybe_use_uvloop rename
+        # across black versions is handled by the fallback in main.py.
+        'black>=26.3,<27',
         'packaging>=20.3',
         'setuptools>=56',
         'unidiff>=0.5',
