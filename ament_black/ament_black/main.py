@@ -28,7 +28,11 @@ from xml.sax.saxutils import quoteattr
 from black import get_sources
 from black import main as black
 from black import re_compile_maybe_verbose
-from black.concurrency import maybe_install_uvloop
+
+try:
+    from black.concurrency import maybe_install_uvloop
+except ImportError:  # black >= 26.3.0 renamed it (psf/black#4996)
+    from black.concurrency import maybe_use_uvloop as maybe_install_uvloop
 from black.const import DEFAULT_EXCLUDES
 from black.const import DEFAULT_INCLUDES
 from black.report import Report
