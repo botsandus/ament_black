@@ -2,8 +2,8 @@
 Changelog for package ament_cmake_black
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.7 (2026-06-06)
+------------------
 * Bump cmake minimum version (`#18 <https://github.com/botsandus/ament_black/issues/18>`_)
 * Contributors: Guillaume Doisy
 

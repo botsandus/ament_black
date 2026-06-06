@@ -2,11 +2,13 @@
 Changelog for package ament_black
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.7 (2026-06-06)
+------------------
 * Support black >= 26.3.0: fall back to ``maybe_use_uvloop`` (black 26.3.0 renamed ``maybe_install_uvloop``, `psf/black#4996 <https://github.com/psf/black/issues/4996>`_) (`#18 <https://github.com/botsandus/ament_black/issues/18>`_)
 * Bound black to the 2026 stable-style year (>=26.3,<27)
 * Unpin black/uvloop in setup.py for Python 3.14 pip installs
+* Fix pytest test collection on Python 3.14: declare pytest via ``setup.cfg`` ``[options.extras_require]`` (setuptools drops the deprecated ``tests_require``, so colcon fell back to unittest, collected 0 tests, and failed the buildfarm with exit code 5)
+* Refresh stale ``setup.py`` maintainer metadata
 * Contributors: Guillaume Doisy
 
 0.2.6 (2024-09-05)

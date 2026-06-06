@@ -2,12 +2,12 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>ament_cmake_black</name>
-  <version>0.2.6</version>
+  <version>0.2.7</version>
   <description>
     The CMake API for ament_black to lint Python code using black.
   </description>
-  <maintainer email="tylerjw@gamil.com">Tyler Weaver</maintainer>
-  <maintainer email="ignacio@dexory.com">Ignacio Vizzo</maintainer>
+  <maintainer email="guillaume@dexory.com">Guillaume Doisy</maintainer>
+  <maintainer email="fotios.papadopoulos@dexory.com">Fotios Papadopoulos</maintainer>
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake_core</buildtool_depend>
