@@ -16,11 +16,10 @@
 # limitations under the License.
 
 import argparse
-import contextlib
 from importlib import metadata
 import os
+import subprocess
 import sys
-import tempfile
 import time
 from xml.sax.saxutils import escape
 from xml.sax.saxutils import quoteattr
@@ -28,25 +27,12 @@ from xml.sax.saxutils import quoteattr
 from black import get_sources
 from black import main as black
 from black import re_compile_maybe_verbose
-
-try:
-    from black.concurrency import maybe_install_uvloop
-except ImportError:  # black >= 26.3.0 renamed it (psf/black#4996)
-    from black.concurrency import maybe_use_uvloop as maybe_install_uvloop
 from black.const import DEFAULT_EXCLUDES
 from black.const import DEFAULT_INCLUDES
 from black.report import Report
 import click
 from packaging.version import Version
 from unidiff import PatchSet
-
-
-def patched_black(*args, **kwargs) -> None:
-    from multiprocessing import freeze_support
-
-    maybe_install_uvloop()
-    freeze_support()
-    black(*args, **kwargs)
 
 
 def main(argv=sys.argv[1:]):
@@ -127,41 +113,35 @@ def main(argv=sys.argv[1:]):
     black_args = black_args_withouth_path.copy()
     black_args.extend(args.paths)
 
-    with tempfile.NamedTemporaryFile('w') as diff:
-        with contextlib.redirect_stdout(diff):
-            patched_black([*black_args, '--diff'], standalone_mode=False)
-            with open(diff.name, 'r') as file:
-                output = file.read()
+    command = [sys.executable, '-m', 'black', *black_args, '--no-color']
+    if not args.reformat:
+        command.extend(['--check', '--diff'])
+    result = subprocess.run(command, capture_output=True, text=True)
+    print(result.stderr, file=sys.stderr, end='')
 
     # output errors
-    patch_set = PatchSet(output)
+    patch_set = PatchSet(result.stdout if not args.reformat else '')
 
-    changed_files = []
     report = {}
     for patch in patch_set:
         filename = patch.source_file
-        changed_files.append(filename)
         report[filename] = patch
 
-    # overwrite original with reformatted files
-    if args.reformat and changed_files:
-        # pass other arguments, such as the config, but run now only on files to be changed
-        reformat_args = black_args_withouth_path.copy()
-        reformat_args.extend(changed_files)
-        patched_black(reformat_args)
+    rc = result.returncode
+    error = None
+    if rc != 0 and (rc != 1 or not report):
+        error = result.stderr or 'Black exited with status %d' % rc
 
     # output summary
     file_count = sum(1 if report[k] else 0 for k in report.keys())
     replacement_count = sum(len(r) for r in report.values())
-    if not file_count:
+    if rc == 0:
         print('No problems found')
-        rc = 0
-    else:
+    elif file_count:
         print(
             '%d files with %d code style divergences' % (file_count, replacement_count),
             file=sys.stderr,
         )
-        rc = 1
 
     # generate xunit file
     if args.xunit_file:
@@ -172,7 +152,9 @@ def main(argv=sys.argv[1:]):
             file_name = file_name.split(suffix)[0]
         testname = '%s.%s' % (folder_name, file_name)
 
-        xml = get_xunit_content(report, testname, time.time() - start_time, checked_files)
+        xml = get_xunit_content(
+            report, testname, time.time() - start_time, checked_files, error=error
+        )
         path = os.path.dirname(os.path.abspath(args.xunit_file))
         if not os.path.exists(path):
             os.makedirs(path)
@@ -202,13 +184,15 @@ def get_line_number(data, offset):
     return data[0:offset].count('\n') + data[0:offset].count('\r') + 1
 
 
-def get_xunit_content(report, testname, elapsed, checked_files):
-    test_count = sum(max(len(r), 1) for r in report.values())
+def get_xunit_content(report, testname, elapsed, checked_files, error=None):
+    execution_errors = int(error is not None)
+    test_count = sum(max(len(r), 1) for r in report.values()) + execution_errors
     error_count = sum(len(r) for r in report.values())
     data = {
         'testname': testname,
         'test_count': test_count,
         'error_count': error_count,
+        'execution_errors': execution_errors,
         'time': '%.3f' % round(elapsed, 3),
     }
     xml = (
@@ -216,7 +200,7 @@ def get_xunit_content(report, testname, elapsed, checked_files):
 <testsuite
   name="%(testname)s"
   tests="%(test_count)d"
-  errors="0"
+    errors="%(execution_errors)d"
   failures="%(error_count)d"
   time="%(time)s"
 >
@@ -255,6 +239,13 @@ def get_xunit_content(report, testname, elapsed, checked_files):
 """
                 % data
             )
+
+    if error is not None:
+        xml += (
+            '  <testcase name="black" classname=%s>\n'
+            '    <error message="Black execution failed">%s</error>\n'
+            '  </testcase>\n'
+        ) % (quoteattr(testname), escape(error))
 
     # output list of checked files
     data = {'checked_files': escape(''.join(['\n* %s' % r for r in sorted(checked_files)]))}
